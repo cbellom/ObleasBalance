@@ -6,6 +6,7 @@
 package obleasnoob;
 
 import com.obleasnoob.controller.ExcelGenerator;
+import com.obleasnoob.controller.PropertiesController;
 import com.obleasnoob.entity.Sales;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,11 +33,16 @@ public class ObleasNoob {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Sales sales = new Sales();
         sales.setSaleDate(new Date());
         sales.setCostSales(Double.parseDouble("2.1"));
         excelGenerator.writeSalesInExcelFile("Balance.xls", 0, sales);
+        
+        PropertiesController propertiesController = new PropertiesController();
+        propertiesController.getProppertiesTargetRowValue();
+        
+        propertiesController.setPropertiesTargetRowValue("12");
     }
     
 }

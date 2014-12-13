@@ -11,9 +11,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -48,8 +52,8 @@ public class ExcelGenerator {
     
     public void createEmptyFile(String fileName) throws FileNotFoundException, IOException{
         FileOutputStream fileOut =  new FileOutputStream(fileName);
-        workbook = new HSSFWorkbook();
-        HSSFSheet sheet =  workbook.createSheet("FirstSheet");  
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet =  workbook.createSheet("FirstSheet");
         workbook.write(fileOut);
         fileOut.close();
     }
@@ -62,6 +66,7 @@ public class ExcelGenerator {
             
             HSSFWorkbook workbook = new HSSFWorkbook(file);
             HSSFSheet sheet = workbook.getSheetAt(indexSheet);
+            setWorkbook(workbook);
             writeSalesSheet(sheet, sale);
             file.close();
             
@@ -118,16 +123,24 @@ public class ExcelGenerator {
     public void createCell(Row row, int indexCol, Object obj){
         Cell cell = row.createCell(indexCol);
         if(obj instanceof Date) {
-//            CellStyle cellStyle = workbook.createCellStyle();
-//            cellStyle.setDataFormat(workbook.createDataFormat().getFormat("m/d/yy h:mm"));
-            cell.setCellValue((Date)obj);
-//            cell.setCellStyle(cellStyle);
+                SimpleDateFormat datetemp = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = (Date)obj;            
+//                Date cellValue = datetemp.parse(date.toString());
+                cell.setCellValue(date);
+                System.out.println(getWorkbook());
+                HSSFCellStyle dateCellStyle = getWorkbook().createCellStyle();
+                short df = getWorkbook().createDataFormat().getFormat("dd-MM-YYYY");
+                dateCellStyle.setDataFormat(df);
+                cell.setCellStyle(dateCellStyle);
         }else if(obj instanceof Boolean){
             cell.setCellValue((Boolean)obj);
+            cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
         }else if(obj instanceof String){
             cell.setCellValue((String)obj);
+            cell.setCellType(HSSFCell.CELL_TYPE_STRING);
         }else if(obj instanceof Double){
             cell.setCellValue((Double)obj);
+            cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
         }
     }
     
