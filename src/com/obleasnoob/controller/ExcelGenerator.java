@@ -11,8 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +19,12 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -30,19 +32,21 @@ import org.apache.poi.ss.usermodel.Row;
  */
 public class ExcelGenerator {
     
-    HSSFWorkbook workbook;
+    HSSFWorkbook workbookXLS;
+    XSSFWorkbook workbookXLSX;
+    PropertiesController propertiesController = new PropertiesController();
     
     public File getFile(String fileName ){
         File file = null;
         try{
             file = new File(fileName);
             if(!file.exists()) {
-               createEmptyFile(fileName);
+               createEmptyXLSFile(fileName);
             }
         }catch(IOException ex){
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
             try {
-                createEmptyFile(fileName);
+                createEmptyXLSFile(fileName);
             } catch (IOException ex1) {
                 Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex1);
             }
@@ -50,7 +54,7 @@ public class ExcelGenerator {
         return file;
     }
     
-    public void createEmptyFile(String fileName) throws FileNotFoundException, IOException{
+    public void createEmptyXLSFile(String fileName) throws FileNotFoundException, IOException{
         FileOutputStream fileOut =  new FileOutputStream(fileName);
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet =  workbook.createSheet("FirstSheet");
@@ -58,7 +62,7 @@ public class ExcelGenerator {
         fileOut.close();
     }
     
-    public void writeSalesInExcelFile(String fileName, int indexSheet, Sales sale){
+    public void writeSalesInXLSFile(String fileName, int indexSheet, Sales sale){
         FileInputStream file = null;
         FileOutputStream outFile = null;
         try {
@@ -66,8 +70,8 @@ public class ExcelGenerator {
             
             HSSFWorkbook workbook = new HSSFWorkbook(file);
             HSSFSheet sheet = workbook.getSheetAt(indexSheet);
-            setWorkbook(workbook);
-            writeSalesSheet(sheet, sale);
+            setWorkbookXLS(workbook);
+            writeSalesSheetXLS(sheet, sale);
             file.close();
             
             FileOutputStream out = new FileOutputStream(new File(fileName));
@@ -87,49 +91,49 @@ public class ExcelGenerator {
         }
     }
     
-    public void writeSalesSheet(HSSFSheet sheet, Sales sale){
+    public void writeSalesSheetXLS(HSSFSheet sheet, Sales sale) throws IOException{
         int indexRow = getRowTarget();
         int indexCol = 0;
         
         Row row = sheet.createRow(indexRow);
-        createCell(row, indexCol, sale.getSaleDate());
+        createCellXLS(row, indexCol, sale.getSaleDate());
         indexCol++;
-        createCell(row, indexCol, sale.getOperatingRevenues());
+        createCellXLS(row, indexCol, sale.getOperatingRevenues());
         indexCol++;
-        createCell(row, indexCol, sale.getCostSales());
+        createCellXLS(row, indexCol, sale.getCostSales());
         indexCol++;
-        createCell(row, indexCol, sale.getGrossProfit());
+        createCellXLS(row, indexCol, sale.getGrossProfit());
         indexCol++;
-        createCell(row, indexCol, sale.getOperatingExpenditure());
+        createCellXLS(row, indexCol, sale.getOperatingExpenditure());
         indexCol++;
-        createCell(row, indexCol, sale.getUAII());
+        createCellXLS(row, indexCol, sale.getUAII());
         indexCol++;
-        createCell(row, indexCol, sale.getNonOperatingIncome());
+        createCellXLS(row, indexCol, sale.getNonOperatingIncome());
         indexCol++;
-        createCell(row, indexCol, sale.getNonOperatingExpenses());
+        createCellXLS(row, indexCol, sale.getNonOperatingExpenses());
         indexCol++;
-        createCell(row, indexCol, sale.getNetIncomeDaily());
+        createCellXLS(row, indexCol, sale.getNetIncomeDaily());
         indexCol++;
         for(Double hour:sale.getHoursPerStations()){
-            createCell(row, indexCol, hour);
+            createCellXLS(row, indexCol, hour);
             indexCol++;
         }
-        createCell(row, indexCol, sale.getTotalHours());
+        createCellXLS(row, indexCol, sale.getTotalHours());
         indexCol++;
-        createCell(row, indexCol, sale.getEarningsPerHour());
+        createCellXLS(row, indexCol, sale.getEarningsPerHour());
         indexCol++;
+        
+        indexRow++;
+        propertiesController.setPropertiesTargetRowValue(indexRow+"");
     }
     
-    public void createCell(Row row, int indexCol, Object obj){
+    public void createCellXLS(Row row, int indexCol, Object obj){
         Cell cell = row.createCell(indexCol);
         if(obj instanceof Date) {
-                SimpleDateFormat datetemp = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = (Date)obj;            
-//                Date cellValue = datetemp.parse(date.toString());
                 cell.setCellValue(date);
-                System.out.println(getWorkbook());
-                HSSFCellStyle dateCellStyle = getWorkbook().createCellStyle();
-                short df = getWorkbook().createDataFormat().getFormat("dd-MM-YYYY");
+                HSSFCellStyle dateCellStyle = getWorkbookXLS().createCellStyle();
+                short df = getWorkbookXLS().createDataFormat().getFormat("dd-MMM-YYYY");
                 dateCellStyle.setDataFormat(df);
                 cell.setCellStyle(dateCellStyle);
         }else if(obj instanceof Boolean){
@@ -145,15 +149,38 @@ public class ExcelGenerator {
     }
     
     public int getRowTarget(){
-        return 1;
+        int row = 0;
+        try {
+            row = propertiesController.getPropertiesTargetRowValue();
+        } catch (IOException ex) {
+            Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return row;
+    }
+    
+    public int getColTarget(){
+        int row = 0;
+        try {
+            row = propertiesController.getPropertiesTargetRowValue();
+        } catch (IOException ex) {
+            Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return row;
     }
 
-    public HSSFWorkbook getWorkbook() {
-        return workbook;
+    public HSSFWorkbook getWorkbookXLS() {
+        return workbookXLS;
     }
 
-    public void setWorkbook(HSSFWorkbook workbook) {
-        this.workbook = workbook;
+    public void setWorkbookXLS(HSSFWorkbook workbook) {
+        this.workbookXLS = workbook;
+    }
+    
+    public String getExtentionFile(String fileName){
+        String extention;
+        int indexPoint = fileName.lastIndexOf(".");
+        extention = fileName.substring(indexPoint+1, fileName.length());
+        return extention;
     }
     
 }

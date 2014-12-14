@@ -34,15 +34,12 @@ public class ObleasNoob {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        Sales sales = new Sales();
-        sales.setSaleDate(new Date());
-        sales.setCostSales(Double.parseDouble("2.1"));
-        excelGenerator.writeSalesInExcelFile("Balance.xls", 0, sales);
-        
-        PropertiesController propertiesController = new PropertiesController();
-        propertiesController.getProppertiesTargetRowValue();
-        
-        propertiesController.setPropertiesTargetRowValue("12");
+//        Sales sales = new Sales();
+//        sales.setSaleDate(new Date());
+//        sales.setCostSales(Double.parseDouble("2.1"));
+//        excelGenerator.writeSalesInXLSFile("Balance.xlsx", 0, sales);
+        String x = excelGenerator.getExtentionFile("Balance.xlsx");
+        System.out.println("x: "+x);
     }
     
 }

@@ -19,7 +19,7 @@ import java.util.Properties;
  */
 public class PropertiesController {
     
-    public int getProppertiesTargetRowValue() throws IOException {
+    public int getPropertiesTargetRowValue() throws IOException {
         Properties prop = new Properties();
         String propFileName = "config.properties";
 
@@ -33,6 +33,38 @@ public class PropertiesController {
         
         String row = prop.getProperty("targetRow");
         return Integer.parseInt(row);
+    }
+    
+    public int getPropertiesTargetColValue() throws IOException {
+        Properties prop = new Properties();
+        String propFileName = "config.properties";
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+
+        if (inputStream != null) {
+            prop.load(inputStream);
+        } else {
+            throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+        }
+        
+        String col = prop.getProperty("targetCol");
+        return Integer.parseInt(col);
+    }
+    
+    public String getPropertiesFileNameValue() throws IOException {
+        Properties prop = new Properties();
+        String propFileName = "config.properties";
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+
+        if (inputStream != null) {
+            prop.load(inputStream);
+        } else {
+            throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+        }
+        
+        String name = prop.getProperty("fileName");
+        return name;
     }
     
     public void setPropertiesTargetRowValue(String value) throws IOException {
