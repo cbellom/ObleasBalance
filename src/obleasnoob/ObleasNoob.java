@@ -41,7 +41,7 @@ public class ObleasNoob {
         Sales sales = new Sales();
         sales.setSaleDate(new Date());
         sales.setCostSales(Double.parseDouble("2.1"));
-        excelGenerator.writeSales("Balance.xlsx", 0, sales);
+        excelGenerator.writeSales(sales);
         
         String excelFileName = "Test.xlsx";//name of excel file
  

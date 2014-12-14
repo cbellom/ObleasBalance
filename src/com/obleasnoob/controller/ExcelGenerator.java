@@ -20,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -58,25 +59,25 @@ public class ExcelGenerator {
         FileOutputStream fileOut =  new FileOutputStream(fileName);
         if("xls".equals(extention)){
             HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet sheet =  workbook.createSheet("FirstSheet");
+            HSSFSheet sheet =  workbook.createSheet(propertiesController.getSheetName());
             workbook.write(fileOut);
         } else if("xlsx".equals(extention)){
             XSSFWorkbook workbook = new XSSFWorkbook();
-            XSSFSheet sheet =  workbook.createSheet("FirstSheet");
+            XSSFSheet sheet =  workbook.createSheet(propertiesController.getSheetName());
             workbook.write(fileOut);
         }
         fileOut.close();
             
     }
     
-    public void writeInXLSFile(String fileName, int indexSheet, Object obj){
+    public void writeInXLSFile(String fileName, Object obj){
         FileInputStream file = null;
         FileOutputStream outFile = null;
         try {
             file = new FileInputStream(getFile(fileName));
             
             HSSFWorkbook workbook = new HSSFWorkbook(file);
-            HSSFSheet sheet = workbook.getSheetAt(indexSheet);
+            HSSFSheet sheet = workbook.getSheetAt(propertiesController.getSheetIndex());
             setWorkbookXLS(workbook);
             
             if(obj instanceof Inventory){
@@ -104,14 +105,14 @@ public class ExcelGenerator {
         }
     }
     
-    public void writeInXLSXFile(String fileName, int indexSheet, Object obj){
+    public void writeInXLSXFile(String fileName, Object obj){
         FileInputStream file = null;
         FileOutputStream outFile = null;
         try {
             file = new FileInputStream(getFile(fileName));
             
-            XSSFWorkbook workbook = new XSSFWorkbook();
-            XSSFSheet sheet = workbook.getSheetAt(indexSheet);
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            XSSFSheet sheet = workbook.getSheetAt(propertiesController.getSheetIndex());
             setWorkbookXLSX(workbook);
             
             if(obj instanceof Inventory){
@@ -171,14 +172,14 @@ public class ExcelGenerator {
         indexCol++;
         
         indexRow++;
-        propertiesController.setPropertiesTargetRowValue(indexRow+"");
+        propertiesController.setTargetRow(indexRow);
     }
     
     public void writeSalesSheet(XSSFSheet sheet, Sales sale) throws IOException{
         int indexRow = getRowTarget();
         int indexCol = 0;
         
-        Row row = sheet.createRow(indexRow);
+        XSSFRow row = sheet.createRow(indexRow);
         createCell(row, indexCol, sale.getSaleDate());
         indexCol++;
         createCell(row, indexCol, sale.getOperatingRevenues());
@@ -207,7 +208,7 @@ public class ExcelGenerator {
         indexCol++;
         
         indexRow++;
-        propertiesController.setPropertiesTargetRowValue(indexRow+"");
+        propertiesController.setTargetRow(indexRow);
     }
     
     public void writeInventorySheet(HSSFSheet sheet, Inventory inventory) throws IOException{
@@ -321,10 +322,6 @@ public class ExcelGenerator {
         if(obj instanceof Date) {
                 Date date = (Date)obj;            
                 cell.setCellValue(date);
-                CellStyle dateCellStyle = getWorkbookXLS().createCellStyle();
-                short df = getWorkbookXLS().createDataFormat().getFormat("dd-MMM-YYYY");
-                dateCellStyle.setDataFormat(df);
-                cell.setCellStyle(dateCellStyle);
         }else if(obj instanceof Boolean){
             cell.setCellValue((Boolean)obj);
             cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
@@ -338,23 +335,11 @@ public class ExcelGenerator {
     }
     
     public int getRowTarget(){
-        int row = 0;
-        try {
-            row = propertiesController.getPropertiesTargetRowValue();
-        } catch (IOException ex) {
-            Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return row;
+        return propertiesController.getTargetRow();
     }
     
     public int getColTarget(){
-        int row = 0;
-        try {
-            row = propertiesController.getPropertiesTargetRowValue();
-        } catch (IOException ex) {
-            Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return row;
+        return propertiesController.getTargetCol();
     }
   
     public String getExtentionFile(String fileName){
@@ -364,12 +349,22 @@ public class ExcelGenerator {
         return extention;
     }
     
-    public void writeSales(String fileName, int indexSheet, Sales sale){
-        String extention = getExtentionFile(fileName);
-        if("xls".equals(extention))
-            writeInXLSFile(fileName, indexSheet, sale);
-        else if("xlsx".equals(extention))
-            writeInXLSXFile(fileName, indexSheet, sale);
+    public void writeSales(Sales sale){
+        try {
+            propertiesController.getPropertiesValues();
+            
+            String fileName = propertiesController.getFileName();        
+            String extention = getExtentionFile(fileName);
+            
+            if("xls".equals(extention))
+                writeInXLSFile(fileName, sale);
+            else if("xlsx".equals(extention))
+                writeInXLSXFile(fileName, sale);
+        
+            propertiesController.updatePropertiesValues();
+        } catch (IOException ex) {
+            Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public HSSFWorkbook getWorkbookXLS() {
