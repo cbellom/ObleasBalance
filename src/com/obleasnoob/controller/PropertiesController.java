@@ -23,7 +23,7 @@ public class PropertiesController {
     private String sheetName;
     private int sheetIndex;
     private int targetCol;
-    private int targetRow;
+    private int targetColDate;
     private String propFileName;
 
     public PropertiesController() {
@@ -31,7 +31,7 @@ public class PropertiesController {
         sheetName = "Invent. y sueldos";
         sheetIndex = 0;
         targetCol = 0;
-        targetRow = 0;
+        targetColDate = 0;
         propFileName = "config.properties";
     }
         
@@ -51,7 +51,7 @@ public class PropertiesController {
         sheetName = prop.getProperty("sheetName");
         sheetIndex = Integer.parseInt(prop.getProperty("sheetIndex"));
         targetCol = Integer.parseInt(prop.getProperty("targetCol"));
-        targetRow = Integer.parseInt(prop.getProperty("targetRow"));
+        targetColDate = Integer.parseInt(prop.getProperty("targetColDate"));
         inputStream.close();
     }
         
@@ -68,7 +68,7 @@ public class PropertiesController {
         props.setProperty("sheetName", sheetName);
         props.setProperty("sheetIndex", sheetIndex+"");
         props.setProperty("targetCol", targetCol+"");
-        props.setProperty("targetRow", targetRow+"");
+        props.setProperty("targetColDate", targetColDate+"");
         props.store(out, null);
         out.close();
     }
@@ -105,12 +105,12 @@ public class PropertiesController {
         this.targetCol = targetCol;
     }
 
-    public int getTargetRow() {
-        return targetRow;
+    public int getTargetColDate() {
+        return targetColDate;
     }
 
-    public void setTargetRow(int targetRow) {
-        this.targetRow = targetRow;
+    public void setTargetColDate(int targetColDate) {
+        this.targetColDate = targetColDate;
     }
     
 }

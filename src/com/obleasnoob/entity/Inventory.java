@@ -5,11 +5,14 @@
  */
 package com.obleasnoob.entity;
 
+import java.util.Date;
+
 /**
  *
  * @author idea
  */
-public class Inventory {    
+public class Inventory {   
+    private Date date;
     private Double[] salesPerStations;
     private Double[] hoursPerStations;
     private Double totalHours;
@@ -203,6 +206,14 @@ public class Inventory {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
     
 }

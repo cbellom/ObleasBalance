@@ -13,13 +13,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -140,82 +145,41 @@ public class ExcelGenerator {
     }
     
     public void writeSalesSheet(HSSFSheet sheet, Sales sale) throws IOException{
-        int indexRow = getRowTarget();
-        int indexCol = 0;
         
-        Row row = sheet.createRow(indexRow);
-        createCell(row, indexCol, sale.getSaleDate());
-        indexCol++;
-        createCell(row, indexCol, sale.getOperatingRevenues());
-        indexCol++;
-        createCell(row, indexCol, sale.getCostSales());
-        indexCol++;
-        createCell(row, indexCol, sale.getGrossProfit());
-        indexCol++;
-        createCell(row, indexCol, sale.getOperatingExpenditure());
-        indexCol++;
-        createCell(row, indexCol, sale.getUAII());
-        indexCol++;
-        createCell(row, indexCol, sale.getNonOperatingIncome());
-        indexCol++;
-        createCell(row, indexCol, sale.getNonOperatingExpenses());
-        indexCol++;
-        createCell(row, indexCol, sale.getNetIncomeDaily());
-        indexCol++;
-        for(Double hour:sale.getHoursPerStations()){
-            createCell(row, indexCol, hour);
-            indexCol++;
-        }
-        createCell(row, indexCol, sale.getTotalHours());
-        indexCol++;
-        createCell(row, indexCol, sale.getEarningsPerHour());
-        indexCol++;
-        
-        indexRow++;
-        propertiesController.setTargetRow(indexRow);
     }
     
     public void writeSalesSheet(XSSFSheet sheet, Sales sale) throws IOException{
-        int indexRow = getRowTarget();
-        int indexCol = 0;
         
-        XSSFRow row = sheet.createRow(indexRow);
-        createCell(row, indexCol, sale.getSaleDate());
-        indexCol++;
-        createCell(row, indexCol, sale.getOperatingRevenues());
-        indexCol++;
-        createCell(row, indexCol, sale.getCostSales());
-        indexCol++;
-        createCell(row, indexCol, sale.getGrossProfit());
-        indexCol++;
-        createCell(row, indexCol, sale.getOperatingExpenditure());
-        indexCol++;
-        createCell(row, indexCol, sale.getUAII());
-        indexCol++;
-        createCell(row, indexCol, sale.getNonOperatingIncome());
-        indexCol++;
-        createCell(row, indexCol, sale.getNonOperatingExpenses());
-        indexCol++;
-        createCell(row, indexCol, sale.getNetIncomeDaily());
-        indexCol++;
-        for(Double hour:sale.getHoursPerStations()){
-            createCell(row, indexCol, hour);
-            indexCol++;
-        }
-        createCell(row, indexCol, sale.getTotalHours());
-        indexCol++;
-        createCell(row, indexCol, sale.getEarningsPerHour());
-        indexCol++;
-        
-        indexRow++;
-        propertiesController.setTargetRow(indexRow);
     }
     
     public void writeInventorySheet(HSSFSheet sheet, Inventory inventory) throws IOException{
-        int indexRow = getRowTarget();
+        int indexRow = getIndexRowByDate(inventory.getDate(), sheet, getColDateTarget());
         int indexCol = getColTarget();
         
-        Row row = sheet.createRow(indexRow);
+        if(indexRow<0){
+            indexRow = sheet.getLastRowNum();    
+            Row row = sheet.createRow(indexRow);        
+            createInventory(inventory, row, indexCol);
+        }else{
+            updateInventory(sheet, inventory, indexRow, indexCol);
+        }  
+    }
+    
+    public void writeInventorySheet(XSSFSheet sheet, Inventory inventory) throws IOException{
+        int indexRow = getIndexRowByDate(inventory.getDate(), sheet, getColDateTarget());
+        int indexCol = getColTarget();
+        System.out.println("asdasd "+indexRow);
+        if(indexRow<0){
+            indexRow = sheet.getLastRowNum();    
+            Row row = sheet.createRow(indexRow);        
+            createInventory(inventory, row, indexCol);
+        }else{
+            updateInventory(sheet, inventory, indexRow, indexCol);
+        }      
+    }
+    
+    private void createInventory(Inventory inventory, Row row, int indexCol){
+        createCell(row, indexCol-1, inventory.getDate());
         for(Double hour:inventory.getSalesPerStations()){
             createCell(row, indexCol, hour);
             indexCol++;
@@ -264,64 +228,109 @@ public class ExcelGenerator {
         indexCol++;
     }
     
-    public void writeInventorySheet(XSSFSheet sheet, Inventory inventory) throws IOException{
-        int indexRow = getRowTarget();
-        int indexCol = getColTarget();
-        
-        Row row = sheet.createRow(indexRow);
+    private void updateInventory(XSSFSheet sheet, Inventory inventory, int indexRow, int indexCol){        
         for(Double hour:inventory.getSalesPerStations()){
-            createCell(row, indexCol, hour);
+            updateCell(sheet, indexRow, indexCol, hour);
             indexCol++;
         }        
         for(Double hour:inventory.getHoursPerStations()){
-            createCell(row, indexCol, hour);
+            updateCell(sheet, indexRow, indexCol, hour);
             indexCol++;
         }        
-        createCell(row, indexCol, inventory.getTotalHours());
+        updateCell(sheet, indexRow, indexCol, inventory.getTotalHours());
         indexCol++;
-        createCell(row, indexCol, inventory.getWafers());
+        updateCell(sheet, indexRow, indexCol, inventory.getWafers());
         indexCol++;
-        createCell(row, indexCol, inventory.getArequipe());
+        updateCell(sheet, indexRow, indexCol, inventory.getArequipe());
         indexCol++;
-        createCell(row, indexCol, inventory.getCheese());
+        updateCell(sheet, indexRow, indexCol, inventory.getCheese());
         indexCol++;
-        createCell(row, indexCol, inventory.getBlackberry());
+        updateCell(sheet, indexRow, indexCol, inventory.getBlackberry());
         indexCol++;
-        createCell(row, indexCol, inventory.getCream());
+        updateCell(sheet, indexRow, indexCol, inventory.getCream());
         indexCol++;
-        createCell(row, indexCol, inventory.getAzucar());
+        updateCell(sheet, indexRow, indexCol, inventory.getAzucar());
         indexCol++;
-        createCell(row, indexCol, inventory.getRice());
+        updateCell(sheet, indexRow, indexCol, inventory.getRice());
         indexCol++;
-        createCell(row, indexCol, inventory.getMilk());
+        updateCell(sheet, indexRow, indexCol, inventory.getMilk());
         indexCol++;        
-        createCell(row, indexCol, inventory.getGrapes());
+        updateCell(sheet, indexRow, indexCol, inventory.getGrapes());
         indexCol++;
-        createCell(row, indexCol, inventory.getCinnamon());
+        updateCell(sheet, indexRow, indexCol, inventory.getCinnamon());
         indexCol++;
-        createCell(row, indexCol, inventory.getNail());
+        updateCell(sheet, indexRow, indexCol, inventory.getNail());
         indexCol++;
-        createCell(row, indexCol, inventory.getFuel());
+        updateCell(sheet, indexRow, indexCol, inventory.getFuel());
         indexCol++;
-        createCell(row, indexCol, inventory.getNapkins());
+        updateCell(sheet, indexRow, indexCol, inventory.getNapkins());
         indexCol++;
-        createCell(row, indexCol, inventory.getGlasses());
+        updateCell(sheet, indexRow, indexCol, inventory.getGlasses());
         indexCol++;
-        createCell(row, indexCol, inventory.getGloves());
+        updateCell(sheet, indexRow, indexCol, inventory.getGloves());
         indexCol++;
-        createCell(row, indexCol, inventory.getTea());
+        updateCell(sheet, indexRow, indexCol, inventory.getTea());
         indexCol++;
-        createCell(row, indexCol, inventory.getOthers());
+        updateCell(sheet, indexRow, indexCol, inventory.getOthers());
         indexCol++;
-        createCell(row, indexCol, inventory.getComments());
+        updateCell(sheet, indexRow, indexCol, inventory.getComments());
+        indexCol++;
+    }
+    
+    private void updateInventory(HSSFSheet sheet, Inventory inventory, int indexRow, int indexCol){        
+        for(Double hour:inventory.getSalesPerStations()){
+            updateCell(sheet, indexRow, indexCol, hour);
+            indexCol++;
+        }        
+        for(Double hour:inventory.getHoursPerStations()){
+            updateCell(sheet, indexRow, indexCol, hour);
+            indexCol++;
+        }        
+        updateCell(sheet, indexRow, indexCol, inventory.getTotalHours());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getWafers());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getArequipe());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getCheese());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getBlackberry());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getCream());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getAzucar());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getRice());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getMilk());
+        indexCol++;        
+        updateCell(sheet, indexRow, indexCol, inventory.getGrapes());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getCinnamon());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getNail());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getFuel());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getNapkins());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getGlasses());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getGloves());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getTea());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getOthers());
+        indexCol++;
+        updateCell(sheet, indexRow, indexCol, inventory.getComments());
         indexCol++;
     }
     
     public void createCell(Row row, int indexCol, Object obj){
         Cell cell = row.createCell(indexCol);
         if(obj instanceof Date) {
-                Date date = (Date)obj;            
-                cell.setCellValue(date);
+            Date date = (Date)obj;            
+            cell.setCellValue(date);
         }else if(obj instanceof Boolean){
             cell.setCellValue((Boolean)obj);
             cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
@@ -334,8 +343,26 @@ public class ExcelGenerator {
         }
     }
     
-    public int getRowTarget(){
-        return propertiesController.getTargetRow();
+    public void updateCell(Sheet sheet, int indexRow, int indexCol, Object obj){        
+        Cell cell;
+        cell = sheet.getRow(indexRow).getCell(indexCol);
+        if(obj instanceof Date) {
+            Date date = (Date)obj;            
+            cell.setCellValue(date);
+        }else if(obj instanceof Boolean){
+            cell.setCellValue((Boolean)obj);
+            cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
+        }else if(obj instanceof String){
+            cell.setCellValue((String)obj);
+            cell.setCellType(Cell.CELL_TYPE_STRING);
+        }else if(obj instanceof Double){
+            cell.setCellValue((Double)obj);
+            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+        }
+    }
+    
+    public int getColDateTarget(){
+        return propertiesController.getTargetColDate();
     }
     
     public int getColTarget(){
@@ -349,7 +376,7 @@ public class ExcelGenerator {
         return extention;
     }
     
-    public void writeSales(Sales sale){
+    public void writeData(Object obj){
         try {
             propertiesController.getPropertiesValues();
             
@@ -357,11 +384,10 @@ public class ExcelGenerator {
             String extention = getExtentionFile(fileName);
             
             if("xls".equals(extention))
-                writeInXLSFile(fileName, sale);
+                writeInXLSFile(fileName, obj);
             else if("xlsx".equals(extention))
-                writeInXLSXFile(fileName, sale);
+                writeInXLSXFile(fileName, obj);
         
-            propertiesController.updatePropertiesValues();
         } catch (IOException ex) {
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -381,6 +407,60 @@ public class ExcelGenerator {
 
     public void setWorkbookXLSX(XSSFWorkbook workbookXLSX) {
         this.workbookXLSX = workbookXLSX;
+    }
+    
+    public int getIndexRowByDate(Date date, XSSFSheet sheet, int indexCellDate){
+        Iterator<Row> rows=sheet.rowIterator();
+        while (rows.hasNext()) {
+            XSSFRow row = (XSSFRow) rows.next();
+            Cell cellDate = row.getCell(indexCellDate);
+            try{
+                if(cellDate!=null && cellDate.getDateCellValue().getDate()==date.getDate()){
+                    System.out.println("fecha:" + cellDate.getDateCellValue());
+                    return row.getRowNum();
+                }
+            }catch(Exception ex){
+                System.out.println("tipo de celda invalido");
+            }
+        }    
+        return -1;
+    }
+    
+    public int getIndexRowByDate(Date date, HSSFSheet sheet, int indexCellDate){
+        Iterator<Row> rows=sheet.rowIterator();
+        while (rows.hasNext()) {
+            HSSFRow row = (HSSFRow) rows.next();
+            Cell cellDate = row.getCell(indexCellDate);
+            try{
+                if(cellDate!=null && cellDate.getDateCellValue().getDate()==date.getDate()){
+                    System.out.println("fecha:" + cellDate.getDateCellValue());
+                    return row.getRowNum();
+                }
+            }catch(Exception ex){
+                System.out.println("tipo de celda invalido");
+            }
+        }    
+        return -1;
+    }
+    
+    public int getLastIndexRow(XSSFSheet sheet){
+        Iterator<Row> rows=sheet.rowIterator();
+        int rowIndex=0;
+        while (rows.hasNext()) {
+            rows.next();
+            rowIndex ++;
+        }    
+        return rowIndex;
+    }
+    
+    public int getLastIndexRow(HSSFSheet sheet){
+        Iterator<Row> rows=sheet.rowIterator();
+        int rowIndex=0;
+        while (rows.hasNext()) {
+            rows.next();
+            rowIndex ++;
+        }    
+        return rowIndex;
     }
     
 }
