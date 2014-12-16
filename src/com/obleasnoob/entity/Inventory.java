@@ -21,7 +21,7 @@ public class Inventory {
     private Double cheese;
     private Double blackberry;
     private Double cream;
-    private Double Azucar;
+    private Double sugar;
     private Double rice;
     private Double Milk;
     private Double grapes;
@@ -31,7 +31,7 @@ public class Inventory {
     private Double napkins;
     private Double glasses;
     private Double gloves;
-    private Double Tea;
+    private Double tea;
     private Double others;
     private String comments;
 
@@ -104,12 +104,12 @@ public class Inventory {
         this.cream = cream;
     }
 
-    public Double getAzucar() {
-        return Azucar;
+    public Double getSugar() {
+        return sugar;
     }
 
-    public void setAzucar(Double Azucar) {
-        this.Azucar = Azucar;
+    public void setSugar(Double sugar) {
+        this.sugar = sugar;
     }
 
     public Double getRice() {
@@ -185,11 +185,11 @@ public class Inventory {
     }
 
     public Double getTea() {
-        return Tea;
+        return tea;
     }
 
     public void setTea(Double Tea) {
-        this.Tea = Tea;
+        this.tea = Tea;
     }
 
     public Double getOthers() {

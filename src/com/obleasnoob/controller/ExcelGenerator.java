@@ -200,7 +200,7 @@ public class ExcelGenerator {
         indexCol++;
         createCell(row, indexCol, inventory.getCream());
         indexCol++;
-        createCell(row, indexCol, inventory.getAzucar());
+        createCell(row, indexCol, inventory.getSugar());
         indexCol++;
         createCell(row, indexCol, inventory.getRice());
         indexCol++;
@@ -249,7 +249,7 @@ public class ExcelGenerator {
         indexCol++;
         updateCell(sheet, indexRow, indexCol, inventory.getCream());
         indexCol++;
-        updateCell(sheet, indexRow, indexCol, inventory.getAzucar());
+        updateCell(sheet, indexRow, indexCol, inventory.getSugar());
         indexCol++;
         updateCell(sheet, indexRow, indexCol, inventory.getRice());
         indexCol++;
@@ -298,7 +298,7 @@ public class ExcelGenerator {
         indexCol++;
         updateCell(sheet, indexRow, indexCol, inventory.getCream());
         indexCol++;
-        updateCell(sheet, indexRow, indexCol, inventory.getAzucar());
+        updateCell(sheet, indexRow, indexCol, inventory.getSugar());
         indexCol++;
         updateCell(sheet, indexRow, indexCol, inventory.getRice());
         indexCol++;

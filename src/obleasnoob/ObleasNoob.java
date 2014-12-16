@@ -45,7 +45,7 @@ public class ObleasNoob {
         inv.setDate(x);
         inv.setBlackberry(Double.parseDouble("1.1"));
         inv.setArequipe(Double.parseDouble("2.0"));
-        inv.setAzucar(Double.parseDouble("4.0"));
+        inv.setSugar(Double.parseDouble("4.0"));
         excelGenerator.writeData(inv);
         
 //        Sales sales = new Sales();
