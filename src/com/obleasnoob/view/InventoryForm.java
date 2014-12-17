@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 public class InventoryForm extends javax.swing.JFrame {
     private static ExcelGenerator excelGenerator;
     private static Validator validator;
+    private PropertiesFrom propertiesFrom;
     /**
      * Creates new form InventoryForm
      */
@@ -27,6 +28,8 @@ public class InventoryForm extends javax.swing.JFrame {
         initComponents();
         excelGenerator = new ExcelGenerator();
         validator = new Validator();
+        propertiesFrom = new PropertiesFrom();
+        propertiesFrom.setVisible(false);
     }
 
     /**
@@ -114,6 +117,7 @@ public class InventoryForm extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Inventario");
         setMaximumSize(new java.awt.Dimension(1117, 636));
         setPreferredSize(new java.awt.Dimension(1117, 594));
 
@@ -572,7 +576,7 @@ public class InventoryForm extends javax.swing.JFrame {
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jScrollPane1))
                 .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addContainerGap())
+            .addGap(34, 34, 34))
     );
     jPanel7Layout.setVerticalGroup(
         jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -610,10 +614,20 @@ public class InventoryForm extends javax.swing.JFrame {
 
     jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
     jMenuItem2.setText("Propiedades");
+    jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jMenuItem2ActionPerformed(evt);
+        }
+    });
     jMenu1.add(jMenuItem2);
 
     jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
     jMenuItem3.setText("Salir");
+    jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jMenuItem3ActionPerformed(evt);
+        }
+    });
     jMenu1.add(jMenuItem3);
 
     jMenuBar1.add(jMenu1);
@@ -646,6 +660,14 @@ public class InventoryForm extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         writeExcel();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        propertiesFrom.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
     
     /**
      * @param args the command line arguments

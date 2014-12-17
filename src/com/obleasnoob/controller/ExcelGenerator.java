@@ -99,19 +99,19 @@ public class ExcelGenerator {
             FileOutputStream out = new FileOutputStream(new File(fileName));
             workbook.write(out);
             out.close();
-            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
         }catch(IOException ex){
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
         } finally {
             try {
                 file.close();
             } catch (IOException ex) {
                 Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
             }
         }
     }
@@ -137,19 +137,19 @@ public class ExcelGenerator {
             workbook.write(out);
             out.close();
             
-            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
         }catch(IOException ex){
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
         } finally {
             try {
                 file.close();
             } catch (IOException ex) {
                 Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
             }
         }
     }
@@ -178,7 +178,7 @@ public class ExcelGenerator {
     public void writeInventorySheet(XSSFSheet sheet, Inventory inventory) throws IOException{
         int indexRow = getIndexRowByDate(inventory.getDate(), sheet, getColDateTarget());
         int indexCol = getColTarget();
-        System.out.println("asdasd "+indexRow);
+        
         if(indexRow<0){
             indexRow = sheet.getLastRowNum();    
             Row row = sheet.createRow(indexRow);        
@@ -190,7 +190,7 @@ public class ExcelGenerator {
     }
     
     private void createInventory(Inventory inventory, Row row, int indexCol){
-        createCell(row, indexCol-1, inventory.getDate());
+        createCell(row, getColDateTarget(), inventory.getDate());
         for(Double hour:inventory.getSalesPerStations()){
             createCell(row, indexCol, hour);
             indexCol++;
