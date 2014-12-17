@@ -7,6 +7,7 @@ package com.obleasnoob.controller;
 
 import com.obleasnoob.entity.Inventory;
 import com.obleasnoob.entity.Sales;
+import java.awt.Frame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -36,6 +38,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class ExcelGenerator {
     
+    private int indexRowModified;
     HSSFWorkbook workbookXLS;
     XSSFWorkbook workbookXLSX;
     PropertiesController propertiesController = new PropertiesController();
@@ -75,7 +78,7 @@ public class ExcelGenerator {
             
     }
     
-    public void writeInXLSFile(String fileName, Object obj){
+    public void writeInXLSFile(String fileName, Object obj, Frame frame){
         FileInputStream file = null;
         FileOutputStream outFile = null;
         try {
@@ -96,21 +99,24 @@ public class ExcelGenerator {
             FileOutputStream out = new FileOutputStream(new File(fileName));
             workbook.write(out);
             out.close();
-            System.out.println("Excel written successfully..");
+            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.OK_OPTION);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
         }catch(IOException ex){
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
         } finally {
             try {
                 file.close();
             } catch (IOException ex) {
                 Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
             }
         }
     }
     
-    public void writeInXLSXFile(String fileName, Object obj){
+    public void writeInXLSXFile(String fileName, Object obj, Frame frame){
         FileInputStream file = null;
         FileOutputStream outFile = null;
         try {
@@ -130,16 +136,20 @@ public class ExcelGenerator {
             FileOutputStream out = new FileOutputStream(new File(fileName));
             workbook.write(out);
             out.close();
-            System.out.println("Excel written successfully..");
+            
+            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.OK_OPTION);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
         }catch(IOException ex){
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
         } finally {
             try {
                 file.close();
             } catch (IOException ex) {
                 Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.OK_OPTION);
             }
         }
     }
@@ -175,7 +185,8 @@ public class ExcelGenerator {
             createInventory(inventory, row, indexCol);
         }else{
             updateInventory(sheet, inventory, indexRow, indexCol);
-        }      
+        }
+        indexRowModified = indexRow;
     }
     
     private void createInventory(Inventory inventory, Row row, int indexCol){
@@ -376,7 +387,7 @@ public class ExcelGenerator {
         return extention;
     }
     
-    public void writeData(Object obj){
+    public void writeData(Object obj, Frame frame){
         try {
             propertiesController.getPropertiesValues();
             
@@ -384,31 +395,15 @@ public class ExcelGenerator {
             String extention = getExtentionFile(fileName);
             
             if("xls".equals(extention))
-                writeInXLSFile(fileName, obj);
+                writeInXLSFile(fileName, obj, frame);
             else if("xlsx".equals(extention))
-                writeInXLSXFile(fileName, obj);
-        
+                writeInXLSXFile(fileName, obj, frame);
+            
         } catch (IOException ex) {
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public HSSFWorkbook getWorkbookXLS() {
-        return workbookXLS;
-    }
-
-    public void setWorkbookXLS(HSSFWorkbook workbook) {
-        this.workbookXLS = workbook;
-    }
-
-    public XSSFWorkbook getWorkbookXLSX() {
-        return workbookXLSX;
-    }
-
-    public void setWorkbookXLSX(XSSFWorkbook workbookXLSX) {
-        this.workbookXLSX = workbookXLSX;
-    }
-    
     public int getIndexRowByDate(Date date, XSSFSheet sheet, int indexCellDate){
         Iterator<Row> rows=sheet.rowIterator();
         while (rows.hasNext()) {
@@ -461,6 +456,22 @@ public class ExcelGenerator {
             rowIndex ++;
         }    
         return rowIndex;
+    }
+    
+    public HSSFWorkbook getWorkbookXLS() {
+        return workbookXLS;
+    }
+
+    public void setWorkbookXLS(HSSFWorkbook workbook) {
+        this.workbookXLS = workbook;
+    }
+
+    public XSSFWorkbook getWorkbookXLSX() {
+        return workbookXLSX;
+    }
+
+    public void setWorkbookXLSX(XSSFWorkbook workbookXLSX) {
+        this.workbookXLSX = workbookXLSX;
     }
     
 }
