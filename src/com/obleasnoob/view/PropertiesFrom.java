@@ -73,10 +73,10 @@ public class PropertiesFrom extends javax.swing.JFrame {
     public void save(){        
         try {
             properties.setFileName(fileName.getText());
-            properties.setSheetIndex((int)getNumberValue(sheetIndex));
+            properties.setSheetIndex((int)getNumberValue(sheetIndex)-1);
             properties.setSheetName(sheetName.getText());
-            properties.setTargetCol((int)getNumberValue(targetCol));
-            properties.setTargetColDate((int)getNumberValue(targetDateCol));
+            properties.setTargetCol((int)getNumberValue(targetCol)-1);
+            properties.setTargetColDate((int)getNumberValue(targetDateCol)-1);
             properties.updatePropertiesValues();
         } catch (IOException ex) {
             Logger.getLogger(PropertiesFrom.class.getName()).log(Level.SEVERE, null, ex);
@@ -121,6 +121,7 @@ public class PropertiesFrom extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Propiedades");
+        setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setText("Nombre/Ruta del archivo");
 
@@ -130,6 +131,8 @@ public class PropertiesFrom extends javax.swing.JFrame {
 
         jLabel4.setText("No. Columna Fecha");
 
+        save.setBackground(new java.awt.Color(0, 0, 0));
+        save.setForeground(new java.awt.Color(255, 255, 255));
         save.setText("Guardar");
         save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -137,6 +140,8 @@ public class PropertiesFrom extends javax.swing.JFrame {
             }
         });
 
+        close.setBackground(new java.awt.Color(0, 0, 0));
+        close.setForeground(new java.awt.Color(255, 255, 255));
         close.setText("Cancelar");
         close.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

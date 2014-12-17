@@ -8,6 +8,7 @@ package com.obleasnoob.controller;
 import com.obleasnoob.entity.Inventory;
 import com.obleasnoob.entity.Sales;
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -100,18 +101,15 @@ public class ExcelGenerator {
             workbook.write(out);
             out.close();
             JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-        } catch (FileNotFoundException ex) {
+        }catch(IOException | HeadlessException ex){
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
-        }catch(IOException ex){
-            Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
         } finally {
             try {
                 file.close();
             } catch (IOException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
             }
         }
     }
@@ -137,19 +135,16 @@ public class ExcelGenerator {
             workbook.write(out);
             out.close();
             
-            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);     
+        }catch(IOException | HeadlessException ex){
+            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
-        }catch(IOException ex){
-            Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
         } finally {
             try {
                 file.close();
             } catch (IOException ex) {
+                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR);
             }
         }
     }

@@ -118,8 +118,13 @@ public class InventoryForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Inventario");
+        setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1117, 636));
         setPreferredSize(new java.awt.Dimension(1117, 594));
+
+        jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
 
         date.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
             new datechooser.view.appearance.ViewAppearance("custom",
@@ -166,6 +171,7 @@ public class InventoryForm extends javax.swing.JFrame {
 
     jLabel1.setText("Fecha de registro");
 
+    jPanel1.setBackground(new java.awt.Color(255, 255, 255));
     jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Ventas por puesto"));
 
     jLabel3.setText("Puesto 1");
@@ -238,6 +244,7 @@ public class InventoryForm extends javax.swing.JFrame {
                             .addComponent(salesStation5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
     );
 
+    jPanel2.setBackground(new java.awt.Color(255, 255, 255));
     jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Horas trabajadas"));
 
     jLabel9.setText("Puesto 1");
@@ -308,8 +315,10 @@ public class InventoryForm extends javax.swing.JFrame {
                             .addComponent(hoursStation5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
     );
 
+    jPanel3.setBackground(new java.awt.Color(255, 255, 255));
     jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Compras"));
 
+    jPanel4.setBackground(new java.awt.Color(255, 255, 255));
     jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Obleas"));
 
     jLabel14.setText("Obleas");
@@ -373,6 +382,7 @@ public class InventoryForm extends javax.swing.JFrame {
                     .addComponent(blackberry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
     );
 
+    jPanel5.setBackground(new java.awt.Color(255, 255, 255));
     jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Arroz con leche"));
 
     jLabel19.setText("Azucar");
@@ -447,6 +457,7 @@ public class InventoryForm extends javax.swing.JFrame {
                     .addComponent(grapes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
     );
 
+    jPanel6.setBackground(new java.awt.Color(255, 255, 255));
     jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Implementos"));
 
     jLabel25.setText("Combustible");
@@ -543,6 +554,8 @@ public class InventoryForm extends javax.swing.JFrame {
             .addContainerGap())
     );
 
+    jButton1.setBackground(new java.awt.Color(0, 0, 0));
+    jButton1.setForeground(new java.awt.Color(255, 255, 255));
     jButton1.setText("Guardar");
     jButton1.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -551,6 +564,8 @@ public class InventoryForm extends javax.swing.JFrame {
     });
 
     jLabel31.setText("Observaciones");
+
+    jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
 
     comments.setColumns(20);
     comments.setRows(5);

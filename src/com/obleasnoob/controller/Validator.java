@@ -14,7 +14,7 @@ public class Validator {
     
     public boolean isNumberField(String input){
         try {
-            Integer number = Integer.parseInt(input);
+            Double number = Double.parseDouble(input);
             return true;
         } catch (Exception e) {
             return false;
