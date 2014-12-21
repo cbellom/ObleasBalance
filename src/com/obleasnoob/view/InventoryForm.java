@@ -752,11 +752,11 @@ public class InventoryForm extends javax.swing.JFrame {
         inventory.setOthers(getNumberValue(other));
         inventory.setRice(getNumberValue(rice));
         Double[] sales = new Double[5];
-        sales[0]=getNumberValue(hoursStation1);
-        sales[1]=getNumberValue(hoursStation2);
-        sales[2]=getNumberValue(hoursStation3);
-        sales[3]=getNumberValue(hoursStation4);
-        sales[4]=getNumberValue(hoursStation5);
+        sales[0]=getNumberValue(salesStation1);
+        sales[1]=getNumberValue(salesStation2);
+        sales[2]=getNumberValue(salesStation3);
+        sales[3]=getNumberValue(salesStation4);
+        sales[4]=getNumberValue(salesStation5);
         inventory.setSalesPerStations(sales);
         inventory.setSugar(getNumberValue(sugar));
         inventory.setTea(getNumberValue(tea));
