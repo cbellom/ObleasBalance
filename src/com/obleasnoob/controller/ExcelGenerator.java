@@ -14,22 +14,24 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
-
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -100,7 +102,7 @@ public class ExcelGenerator {
             FileOutputStream out = new FileOutputStream(new File(fileName));
             workbook.write(out);
             out.close();
-            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Registro "+indexRowModified+" guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);
         }catch(IOException | HeadlessException ex){
             JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,7 +137,7 @@ public class ExcelGenerator {
             workbook.write(out);
             out.close();
             
-            JOptionPane.showMessageDialog(frame, "Registro guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);     
+            JOptionPane.showMessageDialog(frame, "Registro "+indexRowModified+" guardado exitosamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);     
         }catch(IOException | HeadlessException ex){
             JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(ExcelGenerator.class.getName()).log(Level.SEVERE, null, ex);
@@ -162,12 +164,13 @@ public class ExcelGenerator {
         int indexCol = getColTarget();
         
         if(indexRow<0){
-            indexRow = sheet.getLastRowNum();    
+            indexRow = getLastIndexRow(sheet);  
             Row row = sheet.createRow(indexRow);        
             createInventory(inventory, row, indexCol);
         }else{
             updateInventory(sheet, inventory, indexRow, indexCol);
         }  
+        indexRowModified = indexRow+1;
     }
     
     public void writeInventorySheet(XSSFSheet sheet, Inventory inventory) throws IOException{
@@ -175,13 +178,13 @@ public class ExcelGenerator {
         int indexCol = getColTarget();
         
         if(indexRow<0){
-            indexRow = sheet.getLastRowNum();    
+            indexRow = getLastIndexRow(sheet);    
             Row row = sheet.createRow(indexRow);        
             createInventory(inventory, row, indexCol);
         }else{
             updateInventory(sheet, inventory, indexRow, indexCol);
         }
-        indexRowModified = indexRow;
+        indexRowModified = indexRow+1;
     }
     
     private void createInventory(Inventory inventory, Row row, int indexCol){
@@ -335,8 +338,21 @@ public class ExcelGenerator {
     public void createCell(Row row, int indexCol, Object obj){
         Cell cell = row.createCell(indexCol);
         if(obj instanceof Date) {
-            Date date = (Date)obj;            
-            cell.setCellValue(date);
+            Date date = (Date)obj;    
+            
+            if(workbookXLSX!=null){
+                XSSFDataFormat df = workbookXLSX.createDataFormat();
+                XSSFCellStyle cs = workbookXLSX.createCellStyle();
+                cs.setDataFormat(df.getFormat("dd/mm/yyyy"));
+                cell.setCellValue(date);
+                cell.setCellStyle(cs);
+            }else{
+                HSSFDataFormat df = workbookXLS.createDataFormat();
+                HSSFCellStyle cs = workbookXLS.createCellStyle();
+                cs.setDataFormat(df.getFormat("dd/mm/yyyy"));
+                cell.setCellValue(date);
+                cell.setCellStyle(cs);
+            }
         }else if(obj instanceof Boolean){
             cell.setCellValue((Boolean)obj);
             cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
@@ -353,8 +369,21 @@ public class ExcelGenerator {
         Cell cell;
         cell = sheet.getRow(indexRow).getCell(indexCol);
         if(obj instanceof Date) {
-            Date date = (Date)obj;            
-            cell.setCellValue(date);
+            Date date = (Date)obj;    
+            
+            if(workbookXLSX!=null){
+                XSSFDataFormat df = workbookXLSX.createDataFormat();
+                XSSFCellStyle cs = workbookXLSX.createCellStyle();
+                cs.setDataFormat(df.getFormat("dd/mm/yyyy"));
+                cell.setCellValue(date);
+                cell.setCellStyle(cs);
+            }else{
+                HSSFDataFormat df = workbookXLS.createDataFormat();
+                HSSFCellStyle cs = workbookXLS.createCellStyle();
+                cs.setDataFormat(df.getFormat("dd/mm/yyyy"));
+                cell.setCellValue(date);
+                cell.setCellStyle(cs);
+            }      
         }else if(obj instanceof Boolean){
             cell.setCellValue((Boolean)obj);
             cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
@@ -405,14 +434,13 @@ public class ExcelGenerator {
             XSSFRow row = (XSSFRow) rows.next();
             Cell cellDate = row.getCell(indexCellDate);
             try{
-                if(cellDate!=null && cellDate.getDateCellValue().getDate()==date.getDate()){
-                    System.out.println("fecha:" + cellDate.getDateCellValue());
+                if(cellDate!=null && isEqualDay(cellDate.getDateCellValue(),date)){
                     return row.getRowNum();
                 }
             }catch(Exception ex){
                 System.out.println("tipo de celda invalido");
             }
-        }    
+        }
         return -1;
     }
     
@@ -422,15 +450,31 @@ public class ExcelGenerator {
             HSSFRow row = (HSSFRow) rows.next();
             Cell cellDate = row.getCell(indexCellDate);
             try{
-                if(cellDate!=null && cellDate.getDateCellValue().getDate()==date.getDate()){
-                    System.out.println("fecha:" + cellDate.getDateCellValue());
+                if(cellDate!=null && isEqualDay(cellDate.getDateCellValue(),date)){
                     return row.getRowNum();
                 }
             }catch(Exception ex){
                 System.out.println("tipo de celda invalido");
             }
-        }    
+        }
         return -1;
+    }
+    
+    public boolean isEqualDay(Date date1, Date date2){        
+        if(removeTime(date1).equals(removeTime(date2))){
+            return true;
+        }
+        return false;
+    }
+    
+    public Date removeTime(Date date) {    
+        Calendar cal = Calendar.getInstance();  
+        cal.setTime(date);  
+        cal.set(Calendar.HOUR_OF_DAY, 0);  
+        cal.set(Calendar.MINUTE, 0);  
+        cal.set(Calendar.SECOND, 0);  
+        cal.set(Calendar.MILLISECOND, 0); 
+        return cal.getTime(); 
     }
     
     public int getLastIndexRow(XSSFSheet sheet){
@@ -459,6 +503,7 @@ public class ExcelGenerator {
 
     public void setWorkbookXLS(HSSFWorkbook workbook) {
         this.workbookXLS = workbook;
+        workbookXLSX=null;
     }
 
     public XSSFWorkbook getWorkbookXLSX() {
@@ -467,6 +512,14 @@ public class ExcelGenerator {
 
     public void setWorkbookXLSX(XSSFWorkbook workbookXLSX) {
         this.workbookXLSX = workbookXLSX;
+        workbookXLS=null;
+    }
+    
+    public Workbook getWorkBook(){
+        if(workbookXLS!=null){
+            return workbookXLS;
+        }
+        return workbookXLSX;
     }
     
 }
